@@ -1,0 +1,35 @@
+seed: 2032
+data:
+  dataset: CAMUS
+  size: 128
+  pm: 10
+  folds: 5
+  fold: 1
+  img_size:
+  - 32
+  - 128
+  - 128
+  resample_train: true
+train:
+  optimizer: adamw
+  batch_size: 6
+  lr: 5.0e-05
+  weight_decay: 0.01
+  val_every: 5
+  num_workers: 10
+  flow_loss: false
+  lambda_flow: 0.0
+  physics_loss: false
+  lambda_physics: 0.0
+  epochs: 500
+  accum_steps: 1
+model:
+  d_state: 32
+  expand: 2
+  reduce_n: null
+  reduce_bidirectional: true
+  fusion: triplane_coord
+  fusion_kwargs:
+    only_axial: true
+  variant: procrustes
+  kabsch_weight: fusion_conf

@@ -1,0 +1,83 @@
+# ============================================================================
+# Every setting that varies across the reported results. Anything not listed
+# here is FIXED and is injected by configs/select.py -- see the "fixed" block
+# at the top of that file for the values and why they are not choices.
+#
+#   python configs/select.py CAMUS                > run.yaml   # reported model
+#   python configs/select.py ProReg --arm ssvf_heads > run.yaml # an ablation
+#
+#   python camus_train.py --config run.yaml --save_dir runs/camus
+# ============================================================================
+
+common:
+  seed: 2032
+
+  train:
+    optimizer: adamw
+    batch_size: 6
+    lr: 0.00005                 # 10^{-4} for cross-attention
+    weight_decay: 0.01
+    val_every: 5
+    num_workers: 10
+    flow_loss: false            # dense supervision on the coordinate field
+    lambda_flow: 0.0
+    physics_loss: false         # Navier-Cauchy residual on the coordinate field
+    lambda_physics: 0.0
+
+# ---------------------------------------------------------------- data ----
+CAMUS:
+  data:
+    dataset: CAMUS
+    size: 128                   # 128 | 192 | 384; spacing = 78.848mm / size
+    pm: 10                      # perturbation magnitude of the sampled poses
+    folds: 5
+    fold: all
+    img_size: [32, 128, 128]
+    resample_train: true
+  train:
+    epochs: 500
+
+ProReg:
+  data:
+    dataset: ProReg
+    size: null                  # single native resolution
+    pm: 10
+    folds: 5
+    fold: all
+    img_size: [40, 64, 64]      # 0.8mm isotropic
+    resample_train: true
+  train:
+    epochs: 1500                # fewer frames per fold than CAMUS
+
+arms:
+  wkps:                         # CWCD + weighted Kabsch  (reported)
+    fusion: triplane_coord
+    only_axial: true
+    readout: kabsch
+    kabsch_weight: fusion_conf
+
+  kabsch_uniform:               # CWCD + Kabsch
+    fusion: triplane_coord
+    only_axial: true
+    readout: kabsch
+    kabsch_weight: uniform
+
+  kabsch_triplane:              # Tri-plane CWCD + Kabsch
+    fusion: triplane_coord
+    only_axial: false
+    readout: kabsch
+    kabsch_weight: uniform
+
+  cross_attn_heads:             # Cross Att. + Direct Heads
+    fusion: cross_attn
+    readout: heads
+
+  ssvf_heads:                   # SSVF + Direct Heads
+    fusion: triplane_fssm
+    only_axial: true
+    readout: heads
+
+  cwcd_heads:                   # CWCD + Direct Heads
+    fusion: triplane_coord
+    only_axial: true
+    readout: heads_from_coord   # heads fed by the coordinate field
