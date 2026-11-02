@@ -1,4 +1,3 @@
-
 """SCoPE-Reg — the model, with every block named as in the paper.
 
     SCoPEReg

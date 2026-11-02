@@ -15,7 +15,7 @@ from ._geometry import (
     CORNER_HALF_SIZE, CORNER_FRAC, corner_half_size, CAMUS_SPACING_MM,
 )
 
-# Metric groupings
+# Metric groupings — handy for building report tables.
 SEG_METRICS = ('dice', 'hd95')
 POSE_METRICS = ('mtre', 'trans_err', 'rot_err')
 IMG_METRICS = ('ncc', 'ssim')

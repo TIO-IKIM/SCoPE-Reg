@@ -1,4 +1,4 @@
-"""mTRE — mean target registration error, in millimetres (Equal to DistErr in EUReg, DreamReg).
+"""mTRE — mean target registration error, in millimetres.
 
 The mean L2 distance between five landmarks (the four frame corners and the
 centre) transformed by the predicted pose and by the ground-truth pose, times

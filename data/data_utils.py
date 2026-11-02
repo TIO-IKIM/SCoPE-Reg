@@ -28,8 +28,11 @@ def add_mask(x, mask, dim=1):
 
 
 def sample(x, size):
+    # https://gist.github.com/yoavram/4134617
     i = random.sample(range(x.shape[0]), size)
     return torch.tensor(x[i], dtype=torch.int16)
+    # x = np.random.permutation(x)
+    # return torch.tensor(x[:size])
 
 
 def pkload(fname):
@@ -106,13 +109,13 @@ class FrameRigidTransformer(nn.Module):
         M[:, 2, 0] = -sj
         M[:, 2, 1] = cj * si
         M[:, 2, 2] = cj * ci
-        M[:, :3, 3] = input_dof[:, :3] 
+        M[:, :3, 3] = input_dof[:, :3]  # 平移分量
 
         return M
 
-    def forward(self, vol, dof):
+    def forward(self, vol, dof):  # DOF已经翻转的，比如volsize是H,W,D, 那么dof是[Td, Tw, Th, Rd, Rw, Rh]
 
-        mat = self.dof2mat(dof)  
+        mat = self.dof2mat(dof)  # 已经是z, y, x顺序的
         new_locs = torch.matmul(mat, self.grid)[:, :3]  # (z, y, x, 1)->(z, y, x)
 
         vol_size = vol.shape[2:]
